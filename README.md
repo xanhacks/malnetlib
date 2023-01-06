@@ -4,12 +4,10 @@ MalNetLib is a Python library for parsing PE files made with .NET (based on [dnl
 
 ## Installation
 
-Install the project :
+Install the library (available on [pypi.org](https://pypi.org/project/malnetlib/)):
 
 ```bash
-$ git clone https://github.com/xanhacks/malnetlib
-$ cd malnetlib
-$ python3 -m pip install -r requirements.txt
+$ python3 -m pip install malnetlib
 ```
 
 Compile `dnlib.dll` (required for the project) :
