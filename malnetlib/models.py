@@ -114,7 +114,7 @@ class Object:
         return None
 
 
-class Sample:
+class DotNetPE:
     
     def __init__(self, sample_path):
         self.module = dnlib.DotNet.ModuleDefMD.Load(sample_path)
