@@ -1,0 +1,4 @@
+cffi==1.15.1
+clr-loader==0.2.5
+pycparser==2.21
+pythonnet==3.0.1
