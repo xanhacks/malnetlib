@@ -34,7 +34,7 @@ $ rm -rf dnlib
 
 [NJRat](https://malpedia.caad.fkie.fraunhofer.de/details/win.njrat) is a remote access trojan (RAT). You can use `malnetlib` to extract the configuration of NjRAT which is stored inside .NET class attributes.
 
-Here is an example with the a sample of [NjRAT](https://tria.ge/230101-1z3k8sfh8v) and the script [njrat_extractor.py](examples/njrat_extractor.py) :
+Here is an example with the a sample of [NjRAT](https://tria.ge/230101-1z3k8sfh8v) and the script [njrat_extractor.py](https://github.com/xanhacks/malnetlib/blob/main/examples/njrat_extractor.py) :
 
 ```bash
 $ python3 njrat_extractor.py -h
