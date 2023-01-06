@@ -1,7 +1,7 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
-VERSION = "1.0.2"
+VERSION = "1.0.4"
 
 with open("README.md", encoding="utf8") as readme_file:
     readme_content = readme_file.read()
@@ -15,5 +15,5 @@ setup(
     long_description=readme_content,
     long_description_content_type="text/markdown",
     keywords=["dotnet", "parser"],
-    packages=find_packages()
+    install_requires=["pythonnet>=3.0.1"]
 )
