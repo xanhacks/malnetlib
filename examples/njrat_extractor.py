@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+"""
+Extracts the configuration of the NjRAT malware.
+"""
 from argparse import ArgumentParser
 from base64 import b64decode
 from json import dumps
 
 from malnetlib.models import DotNetPE
- 
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()

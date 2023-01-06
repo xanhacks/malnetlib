@@ -1,6 +1,6 @@
 # MalNetLib
 
-MalNetLib is a Python library for parsing PE files made with `.NET` (based on [dnlib](https://github.com/0xd4d/dnlib)).
+MalNetLib is a Python library for parsing PE files made with .NET (based on [dnlib](https://github.com/0xd4d/dnlib)).
 
 ## Installation
 
