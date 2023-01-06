@@ -1,6 +1,6 @@
 # MalNetLib
 
-MalNetLib is a Python library for parsing PE made with `.NET` based on [dnlib](https://github.com/0xd4d/dnlib).
+MalNetLib is a Python library for parsing PE files made with `.NET` (based on [dnlib](https://github.com/0xd4d/dnlib)).
 
 ## Installation
 
@@ -32,11 +32,9 @@ $ rm -rf dnlib
 
 ### NjRAT
 
-[NJRat](https://malpedia.caad.fkie.fraunhofer.de/details/win.njrat) is a remote access trojan (RAT).
+[NJRat](https://malpedia.caad.fkie.fraunhofer.de/details/win.njrat) is a remote access trojan (RAT). You can use `malnetlib` to extract the configuration of NjRAT which is stored inside .NET class attributes.
 
-You can use `malnetlib` to extract the configuration of the NjRAT malware which is stored inside .NET class attributes.
-
-Here is an example with the [sample](https://tria.ge/230101-1z3k8sfh8v) and the script [njrat_extractor.py](examples/njrat_extractor.py) :
+Here is an example with the a sample of [NjRAT](https://tria.ge/230101-1z3k8sfh8v) and the script [njrat_extractor.py](examples/njrat_extractor.py) :
 
 ```bash
 $ python3 njrat_extractor.py -h
