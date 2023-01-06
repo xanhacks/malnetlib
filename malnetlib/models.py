@@ -56,17 +56,24 @@ class Method:
         return f"{'public' if self.public else 'private'} " + \
             f"{'final' if self.final else ''} "\
             f"{'static' if self.static else ''} "\
-            f"{self.name}"
+            f"{self.name}(" + ", ".join(self.params) + ")"
 
     def __repr__(self):
         return f"<method {self.name}>"
 
     def _setup(self):
-        # TODO parameters and return value
+        # TODO parameters type
         self.name = self.core.get_Name().get_String()
         self.public = self.core.IsPublic
         self.final = self.core.IsFinal
         self.static = self.core.IsStatic
+        self.return_type = self.core.ReturnType.get_TypeName()
+        self.has_params = self.core.get_HasParamDefs()
+        self.params = []
+
+        if self.has_params:
+            for param in self.core.get_ParamDefs():
+                self.params.append(param.name.get_String())
 
 
 class Object:
