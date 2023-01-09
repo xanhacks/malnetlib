@@ -3,6 +3,32 @@ from dnlib.DotNet import *
 from dnlib.DotNet.Emit import *
 
 
+class Resource:
+    """Represents a .NET resource."""
+
+    def __init__(self, core):
+        self.core = core
+        self._setup()
+
+    def __str__(self):
+        return self.core.get_FullName()
+
+    def __repr__(self):
+        return f"<Resource {self.name} 0x{self.offset}>"
+
+    def _setup(self):
+        self.name = self.core.get_Name()
+        self.length = self.core.get_Length()
+        self.offset = self.core.get_Offset()
+        self.public = self.core.get_IsPublic()
+        self.attributes = self.core.get_Attributes
+        self.type = self.core.get_ResourceType()
+
+    def save(self, filename):
+        """Save the resource into an output file."""
+        pass # TODO: write this function
+
+
 class Attribute:
     """Represents a .NET attribute."""
 
@@ -67,7 +93,7 @@ class Method:
         self.final = self.core.IsFinal
         self.static = self.core.IsStatic
         self.instructions = []
-        if self.core.Body:
+        if self.core.HasBody:
             self.instructions = self.core.Body.Instructions
         self.return_type = self.core.ReturnType.get_TypeName()
         self.has_params = self.core.get_HasParamDefs()
@@ -77,6 +103,10 @@ class Method:
             for param in self.core.get_ParamDefs():
                 self.params.append(param.name.get_String())
 
+    def disassemble(self):
+        """Disassemble a method."""
+        for instr in self.instructions:
+            print(instr)
 
 class Object:
     """Represents a .NET object."""
@@ -138,6 +168,30 @@ class DotNetPE:
         self.types = self.mod.Types
         self.resources = self.mod.Resources
 
+    def patch_check_debugger(self):
+        """
+        Invert jump after a call to Debugger::get_IsAttached()
+
+        IL_0000: call System.Boolean System.Diagnostics.Debugger::get_IsAttached()
+        IL_0005: brfalse IL_0015
+        IL_000A: ldstr "Debugger Detected"
+        IL_000F: newobj System.Void System.Exception::.ctor(System.String)
+        IL_0014: throw
+        IL_0015: ret
+        """
+        found = False
+        for method, instr in self.instructions_iterator():
+            if found and instr.OpCode in [OpCodes.Brfalse, OpCodes.Brtrue]:
+                found = False
+                instr.OpCode = OpCodes.Brfalse if instr.OpCode == OpCodes.Brtrue else OpCodes.Brtrue
+            elif instr.OpCode == OpCodes.Call and instr.Operand:
+                if instr.Operand.get_FullName() == "System.Boolean System.Diagnostics.Debugger::get_IsAttached()":
+                    found = True
+
+    def save(self, filename):
+        """Save PE file on disk."""
+        self.mod.Write(filename)
+
     def get_objects(self):
         """Return all the .NET objects of the PE."""
         return [Object(obj_type) for obj_type in self.types]
@@ -154,40 +208,16 @@ class DotNetPE:
         """Return all the .NET resources of the PE."""
         return [Resource(res_type) for res_type in self.resources]
 
-    """
-    def dump_strings(self):
-        # Dump all strings of the PE.
-        str_list = []
-
+    def instructions_iterator(self):
+        """Return an iterator that loop over all the instructions of the PE."""
         for obj_type in self.types:
             for method_type in obj_type.Methods:
                 method = Method(obj_type, method_type)
                 for instr in method.instructions:
-                    print(instr)
-                    if isinstance(instr.Operand, str):
-                        print(instr.Operand)
+                    yield method, instr
 
-        return str_list
-    """
-
-class Resource:
-    """Represents a .NET resource."""
-
-    def __init__(self, core):
-        self.core = core
-        self._setup()
-
-    def __str__(self):
-        return self.core.get_FullName()
-
-    def __repr__(self):
-        return f"<Resource {self.name} 0x{self.offset}>"
-
-    def _setup(self):
-        self.name = self.core.get_Name()
-        self.length = self.core.get_Length()
-        self.offset = self.core.get_Offset()
-        self.public = self.core.get_IsPublic()
-        self.attributes = self.core.get_Attributes
-        self.type = self.core.get_ResourceType()
+    def dump_strings(self):
+        """Dump all strings of the PE."""
+        return [instr.Operand for _, instr in self.instructions_iterator() \
+                if instr.OpCode == OpCodes.Ldstr]
 
