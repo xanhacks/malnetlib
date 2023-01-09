@@ -34,16 +34,21 @@ $ rm -rf dnlib
 
 Here is an example with the a sample of [NjRAT](https://tria.ge/230101-1z3k8sfh8v) and the script [njrat_extractor.py](https://github.com/xanhacks/malnetlib/blob/main/examples/njrat_extractor.py) :
 
-```bash
-$ python3 njrat_extractor.py -h
-usage: njrat_extractor.py [-h] sample
-
-positional arguments:
-  sample      Path to the sample file.
-
-options:
-  -h, --help  show this help message and exit
-$ python3 njrat_extractor.py a04136fe0299b81fe404d9e5257c34e7.exe | jq
+```python
+pe = DotNetPE(args.sample)
+ok_class = pe.get_object("OK")
+njrat_conf = {
+	"host": ok_class.get_attribute("HH").get_value(),
+	"port": ok_class.get_attribute("P").get_value(),
+	"install_directory": "%" + ok_class.get_attribute("DR").get_value() + "%",
+	"install_name": ok_class.get_attribute("EXE").get_value(),
+	"startup": ok_class.get_attribute("sf").get_value(),
+	"campain_id": b64decode(ok_class.get_attribute("VN").get_value()).decode("UTF-8"),
+	"version": ok_class.get_attribute("VR").get_value(),
+	"network_separator": ok_class.get_attribute("Y").get_value(),
+	"mutex": ok_class.get_attribute("RG").get_value()
+}
+print(dumps(njrat_conf))
 ```
 
 ```json
