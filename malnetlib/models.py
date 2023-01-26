@@ -17,16 +17,23 @@ class Resource:
         return f"<Resource {self.name} 0x{self.offset}>"
 
     def _setup(self):
-        self.name = self.core.get_Name()
+        self.name = self.core.get_Name().ToString()
         self.length = self.core.get_Length()
         self.offset = self.core.get_Offset()
         self.public = self.core.get_IsPublic()
         self.attributes = self.core.get_Attributes
         self.type = self.core.get_ResourceType()
 
+    def read(self):
+        """Return the content of the resource."""
+        reader = self.core.CreateReader()
+        data = reader.ReadBytes(self.length)
+        return bytes(data)
+
     def save(self, filename):
         """Save the resource into an output file."""
-        pass # TODO: write this function
+        with open(filename, "wb") as output_file:
+            output_file.write(self.read())
 
 
 class Attribute:

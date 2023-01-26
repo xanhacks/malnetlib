@@ -30,9 +30,9 @@ $ rm -rf dnlib
 
 ### NjRAT
 
-[NJRat](https://malpedia.caad.fkie.fraunhofer.de/details/win.njrat) is a remote access trojan (RAT). You can use `malnetlib` to extract the configuration of NjRAT which is stored inside .NET class attributes.
+> [NjRAT](https://malpedia.caad.fkie.fraunhofer.de/details/win.njrat) is a remote access trojan (RAT).
 
-Here is an example with the a sample of [NjRAT](https://tria.ge/230101-1z3k8sfh8v) and the script [njrat_extractor.py](https://github.com/xanhacks/malnetlib/blob/main/examples/njrat_extractor.py) :
+You can use `malnetlib` to extract the configuration of NjRAT which is stored inside .NET class attributes. Here is an example with the a sample of [NjRAT](https://tria.ge/230101-1z3k8sfh8v) and the script [njrat_extractor.py](https://github.com/xanhacks/malnetlib/blob/main/examples/njrat_extractor.py) :
 
 ```python
 pe = DotNetPE(args.sample)
@@ -64,3 +64,26 @@ print(dumps(njrat_conf))
   "mutex": "25ffb1a66b4748fe7537df7005cc8e55"
 }
 ```
+
+### vw0rm
+
+> [VJW0rm](https://malpedia.caad.fkie.fraunhofer.de/details/win.vjw0rm) (aka Vengeance Justice Worm) is a publicly available, modular JavaScript RAT. Other variants include a Visual Basic Script (VBS) based worm titled vw0rm (Vengeance Worm).
+
+You can use `malnetlib` to list and extract .NET resources from a `vw0rm` dropper.
+
+```python
+>>> from malnetlib.models import DotNetPE
+>>> pe = DotNetPE("30d64daeb3e69ea6dde202a9d519f6ee17614af6e505dd2e5788017c3be4abd8")
+>>> resources = pe.get_resources()
+>>> resources
+[<Resource Windows_Task_Manager.Resources.resources 0x0>, <Resource Windows_Task_Manager.proccesing.resources 0x4806>]
+>>> resources[0].save("/tmp/output.bin")
+```
+
+```vbs
+>>> resources[0].read()
+b'[...]On error resume next\r\n\r\nj = array("WScript.Shell","Scripting.FileSystemObject","Shell.Application","Microsoft.XMLHTTP")
+\r\ng = array("HKCU","HKLM","HKCU\\vw0rm","\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\","HKLM\\SOFTWARE\\Classes\\","REG_SZ","\\defaulticon\\")\r\ny=
+array("winmgmts:","win32_logicaldisk","Win32_OperatingSystem","winmgmts:\\\\localhost\\root\\securitycenter","AntiVirusProduct")\r\n\r\nfunction go(m)\r\n
+```
+
